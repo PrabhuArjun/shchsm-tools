@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Инструменты Сокровищницы ШЧСМ</title>
+<meta name="description" content="Цифровые помощники для служения слову Гурудева и ачарьев — расшифровка лекций и диктовка, бесплатно и локально.">
+<style>
+  :root{
+    --bg:#faf6ef; --panel:#fffdf9; --ink:#2b2622; --soft:#6f665c;
+    --accent:#c1440e; --gold:#b8860b; --line:#e7dcc8; --shadow:rgba(60,40,20,.16);
+    --chip:#f1e8d6;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#1c1915; --panel:#26221c; --ink:#ece5da; --soft:#a99e8d;
+      --accent:#ff8a5c; --gold:#e0b64a; --line:#3a342b; --shadow:rgba(0,0,0,.4); --chip:#332d24; }
+  }
+  :root[data-theme="dark"]{ --bg:#1c1915; --panel:#26221c; --ink:#ece5da; --soft:#a99e8d;
+      --accent:#ff8a5c; --gold:#e0b64a; --line:#3a342b; --shadow:rgba(0,0,0,.4); --chip:#332d24; }
+  :root[data-theme="light"]{ --bg:#faf6ef; --panel:#fffdf9; --ink:#2b2622; --soft:#6f665c;
+      --accent:#c1440e; --gold:#b8860b; --line:#e7dcc8; --shadow:rgba(60,40,20,.16); --chip:#f1e8d6; }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:400 17px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+  .serif{font-family:"Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;}
+  h1,h2,h3{font-family:"Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;
+    font-weight:600;text-wrap:balance;margin:0;}
+  a{color:inherit}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 22px}
+
+  /* ── HERO ── */
+  header.hero{text-align:center;padding:56px 22px 40px;}
+  .hero img{display:block;width:172px;height:172px;object-fit:cover;margin:0 auto 26px;
+    border-radius:50%;border:3px solid var(--gold);box-shadow:0 12px 40px var(--shadow);}
+  .eyebrow{font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);
+    font-weight:600;margin-bottom:.5rem;}
+  .hero h1{font-size:2.7rem;line-height:1.12;letter-spacing:-.01em;margin-bottom:.5rem;}
+  .hero p.lede{max-width:34em;margin:.6rem auto 0;color:var(--soft);font-size:1.12rem;line-height:1.6;}
+
+  /* ── СЕТКА КАРТОЧЕК ── */
+  .tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;
+    padding:20px 0 8px;}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;
+    display:flex;flex-direction:column;box-shadow:0 4px 18px var(--shadow);
+    transition:transform .22s ease, box-shadow .22s ease;}
+  .card:hover{transform:translateY(-4px);box-shadow:0 14px 34px var(--shadow);}
+  .card .art{width:100%;aspect-ratio:16/10;object-fit:cover;border-bottom:1px solid var(--line);}
+  .card .body{padding:22px 24px 24px;display:flex;flex-direction:column;flex:1;}
+  .card .kicker{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);
+    font-weight:600;margin-bottom:.4rem;}
+  .card h2{font-size:1.55rem;margin-bottom:.5rem;}
+  .card p.desc{color:var(--soft);font-size:1rem;line-height:1.62;margin:0 0 1.1rem;flex:1;}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:1.15rem;}
+  .chip{background:var(--chip);color:var(--ink);font-size:.78rem;font-weight:600;
+    padding:4px 11px;border-radius:20px;letter-spacing:.02em;}
+  .ver{margin-left:auto;color:var(--soft);font-size:.8rem;font-variant-numeric:tabular-nums;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5em;
+    background:var(--accent);color:#fff;text-decoration:none;font-weight:650;font-size:1.02rem;
+    padding:13px 20px;border-radius:12px;box-shadow:0 5px 16px var(--shadow);
+    transition:filter .18s ease,transform .18s ease;}
+  .btn:hover{filter:brightness(1.07);transform:translateY(-1px);}
+  .btn .sub{font-weight:400;opacity:.9;font-size:.82rem;margin-left:.2em;}
+
+  /* карточка-«скоро» */
+  .card.soon{background:transparent;border-style:dashed;box-shadow:none;align-items:center;
+    justify-content:center;text-align:center;min-height:220px;}
+  .card.soon:hover{transform:none;box-shadow:none;}
+  .card.soon .body{align-items:center;justify-content:center;}
+  .card.soon .glyph{font-size:2rem;opacity:.5;margin-bottom:.4rem;}
+  .card.soon p{color:var(--soft);font-size:.96rem;max-width:22em;}
+
+  /* ── ПРИНЦИПЫ ── */
+  .principles{margin:40px 0 10px;padding:30px 26px;background:var(--panel);
+    border:1px solid var(--line);border-radius:18px;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:22px;}
+  .pr{display:flex;gap:13px;align-items:flex-start;}
+  .pr .g{font-size:1.35rem;line-height:1;flex-shrink:0;}
+  .pr b{display:block;font-family:"Palatino Linotype",Georgia,serif;font-size:1.05rem;
+    font-weight:600;margin-bottom:.15rem;}
+  .pr span{color:var(--soft);font-size:.92rem;line-height:1.5;}
+
+  /* ── ФУТЕР ── */
+  footer{text-align:center;padding:48px 22px 60px;color:var(--soft);}
+  footer .rule{width:64px;height:2px;background:var(--gold);margin:0 auto 26px;border-radius:2px;opacity:.7;}
+  footer .jai{font-family:"Palatino Linotype",Georgia,serif;color:var(--accent);
+    font-size:1.3rem;font-weight:600;margin:.3rem 0 1rem;}
+  footer a.all{color:var(--soft);font-size:.86rem;border-bottom:1px solid var(--line);
+    text-decoration:none;padding-bottom:1px;}
+  footer a.all:hover{color:var(--ink);border-color:var(--gold);}
+  footer .build{margin-top:1.2rem;font-size:.74rem;color:var(--soft);opacity:.7;
+    font-variant-numeric:tabular-nums;}
+
+  a:focus-visible,.btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:8px;}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media (max-width:560px){ .hero h1{font-size:2.1rem} .hero img{width:140px;height:140px} }
+</style>
+</head>
+<body>
+  <header class="hero">
+    <img src="img/hero.jpg" alt="Ом, лотос и раскрытая книга">
+    <div class="eyebrow">Шри Чайтанья Сарасват Матх</div>
+    <h1 class="serif">Инструменты Сокровищницы</h1>
+    <p class="lede">Цифровые помощники для служения слову Гурудева и ачарьев.
+      Бесплатно, на вашем компьютере, с выверенными именами святой парампары.</p>
+  </header>
+
+  <main class="wrap">
+    <section class="tools" aria-label="Инструменты">
+      <!-- Транскрибатор -->
+      <article class="card">
+        <img class="art" src="img/transcribator.jpg" alt="Звук, обращающийся в слово">
+        <div class="body">
+          <div class="kicker">Звук → текст</div>
+          <h2 class="serif">Транскрибатор</h2>
+          <p class="desc">Расшифровывает лекции и голосовые в текст — с верными именами
+            ачарьев. Всё считается на вашем компьютере, без интернета после установки.</p>
+          <div class="meta">
+            <span class="chip">macOS</span>
+            <span class="chip">Windows</span>
+            <span class="ver">версия 1.0.3</span>
+          </div>
+          <a class="btn" href="https://github.com/PrabhuArjun/shchsm-tools/releases/latest/download/transcribator-shchsm.zip">
+            Скачать <span class="sub">· Mac и Windows</span>
+          </a>
+        </div>
+      </article>
+
+      <!-- Диктовщик -->
+      <article class="card">
+        <img class="art" src="img/dictation.jpg" alt="Манускрипт при свете">
+        <div class="body">
+          <div class="kicker">Голос → текст</div>
+          <h2 class="serif">Диктовщик</h2>
+          <p class="desc">Печатает под вашу диктовку голосом, с тем же выверенным словарём
+            имён. Для писем, заметок и служения словом — где угодно на Маке.</p>
+          <div class="meta">
+            <span class="chip">macOS</span>
+            <span class="ver">версия 1.0.1</span>
+          </div>
+          <a class="btn" href="https://github.com/PrabhuArjun/shchsm-tools/releases/latest/download/dictation-shchsm.zip">
+            Скачать <span class="sub">· Mac</span>
+          </a>
+        </div>
+      </article>
+
+      <!-- Место под будущие -->
+      <article class="card soon">
+        <div class="body">
+          <div class="glyph">🪷</div>
+          <p>Здесь со временем появятся новые инструменты Сокровищницы.</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="principles" aria-label="Принципы">
+      <div class="pr"><span class="g">🕯</span><div><b>Бесплатно навсегда</b><span>Дар служению, не товар. Ничего не нужно оплачивать.</span></div></div>
+      <div class="pr"><span class="g">💻</span><div><b>Работает локально</b><span>После установки — на вашем компьютере, без интернета и без облака.</span></div></div>
+      <div class="pr"><span class="g">📖</span><div><b>Выверенный словарь</b><span>Имена ачарьев и термины — по «Жемчужине» Шридхара Махараджа.</span></div></div>
+      <div class="pr"><span class="g">✋</span><div><b>Слово Гуру не правится</b><span>Машина только помечает спорное — последнее слово за живой вычиткой.</span></div></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="rule"></div>
+    <div>Во славу проповеди Шри Чайтанья Сарасват Матха</div>
+    <div class="jai serif">Джай Шрила Гурудев! 🙏</div>
+    <a class="all" href="https://github.com/PrabhuArjun/shchsm-tools/blob/main/CHANGELOG.md">История версий</a>
+    <div class="build">обновлено 24 июля 2026</div>
+  </footer>
+
+  <script>
+    // уважать выбор темы, если родитель/пользователь его проставил (data-theme на :root)
+    // ничего не навязываем — CSS сам следует системной теме и data-theme.
+  </script>
+</body>
+</html>
