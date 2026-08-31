@@ -1,0 +1,50 @@
+name: Витрина отдаёт все инструменты
+
+# Зачем: в репозитории живут ТРИ инструмента, а `latest` один.
+# Релиз, несущий один ассет, молча обрезает постоянные ссылки остальных
+# (инцидент 29-31.08.2026: три ссылки отдавали 404 более двух суток,
+# витрина при этом продолжала открываться).
+# Проверка стоит НА ПУТИ у любого публикующего, а не в чьём-то чек-листе.
+# Находка: dev-coord. Черновик: Kausala. Разрешение на установку: Арджуна, 31.08.2026.
+
+on:
+  release:
+    types: [published, edited]
+  workflow_dispatch:
+
+jobs:
+  showcase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Vse adresa vitriny + otricatelnyj kontrol
+        run: |
+          set -o pipefail
+          B="https://github.com/${{ github.repository }}/releases/latest/download"
+          # Список — данные владельца витрины. Появился инструмент — добавь строку.
+          FILES="transcribator-shchsm.zip dictation-shchsm.zip Tekst-iz-video-macOS.zip Tekst-iz-video-Windows.zip"
+
+          echo "Ждём публикацию ассетов…"
+          sleep 20
+
+          # Отрицательный контроль ПЕРВЫМ: без него «все 200» неотличимо от
+          # «отвечает 200 на что угодно» (прокси, заглушка, перехват).
+          neg=$(curl -s -o /dev/null -w '%{http_code}' -L --max-time 30 "$B/zavedomo-net-takogo-fajla.zip")
+          echo "контроль на несуществующий файл (обязан быть 404): $neg"
+          if [ "$neg" != "404" ]; then
+            echo "::error::отрицательный контроль вернул $neg вместо 404 — проверка НЕ УМЕЕТ ПАДАТЬ, её зелёное ничего не значит"
+            exit 1
+          fi
+
+          miss=""
+          for f in $FILES; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' -L --max-time 30 "$B/$f")
+            echo "$code  $f"
+            [ "$code" = "200" ] || miss="$miss $f($code)"
+          done
+
+          if [ -n "$miss" ]; then
+            echo "::error::витрина отдаёт НЕ ВСЕ инструменты:$miss — этот релиз обрезал чужие постоянные ссылки. Приложи недостающие ассеты к нему же."
+            exit 1
+          fi
+
+          echo "✅ витрина отдаёт все инструменты (контроль на несуществующий файл: $neg)"
