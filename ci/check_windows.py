@@ -13,6 +13,8 @@ expanded=out/'Проверка установки с пробелами'
 with zipfile.ZipFile(archive) as z:z.extractall(expanded)
 win=expanded/'Transcribator-SHCHSM/windows'
 env=os.environ.copy();env['SHCHSM_AUTOMATED']='1'
+# Exclude runner-preinstalled ffmpeg so the shipped installer downloads its own.
+system=pathlib.Path(env['SystemRoot']);env['PATH']=';'.join(str(x) for x in [system/'System32',system,system/'System32/WindowsPowerShell/v1.0'])
 checks=[]
 def run(bat,args=(),extra=None,tag='run',ok=True):
  e=env.copy();e.update(extra or {})
