@@ -28,12 +28,12 @@ def run(bat,args=(),extra=None,tag='run',ok=True):
 # New runner profile: actual dependencies, model, native Desktop and launcher.
 run(win/'1-Install.bat',tag='install')
 root=pathlib.Path(env['USERPROFILE'])/'.transcriber-shchsm'
-desktop=subprocess.check_output(['powershell.exe','-NoProfile','-Command',"[Console]::OutputEncoding=[Text.UTF8Encoding]::new(); [Environment]::GetFolderPath('Desktop')"]).decode('utf8-sig').strip()
+desktop=subprocess.check_output(['powershell.exe','-NoProfile','-Command',"[Console]::OutputEncoding=[Text.UTF8Encoding]::new(); [Environment]::GetFolderPath('Desktop')"]).decode('utf-8-sig').strip()
 base=pathlib.Path(desktop)/'Транскрибатор ШЧСМ'
 assert (base/'ТРАНСКРИБИРОВАТЬ.bat').exists()
 run(base/'ТРАНСКРИБИРОВАТЬ.bat',[repo/'ci/install-check-ru.wav'],tag='transcribe-russian')
 texts=list((base/'Готовые тексты').glob('install-check-ru*.txt'));assert texts
-text=texts[0].read_text(encoding='utf8-sig').lower()
+text=texts[0].read_text(encoding='utf-8-sig').lower()
 for keyword in ['провер','запись','текст','учител','служени']:assert keyword in text,(keyword,text)
 shutil.copy2(texts[0],out/'result-ru.txt')
 checks+=['fresh-profile install', 'native Desktop launcher', 'actual large-v3-turbo Russian transcription']
@@ -42,6 +42,14 @@ invalid=out/'invalid-audio.wav';invalid.write_text('This is not audio')
 run(base/'ТРАНСКРИБИРОВАТЬ.bat',[invalid],tag='decode-failure',ok=False)
 assert before=={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in (base/'Готовые тексты').iterdir()}
 checks+=['decode failure returns nonzero; existing results preserved']
+engine=root/'bin/whisper-cli.exe'; saved=engine.with_suffix('.saved'); engine.rename(saved)
+try:
+ engine.write_bytes(b'not an executable')
+ run(base/'ТРАНСКРИБИРОВАТЬ.bat',[repo/'ci/install-check-ru.wav'],tag='engine-failure',ok=False)
+ assert before=={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in (base/'Готовые тексты').iterdir()}
+finally:
+ engine.unlink(missing_ok=True); saved.rename(engine)
+checks+=['engine failure returns nonzero; existing results preserved']
 # Wrong expected hash must fail before engine extraction or model download.
 bad=win/'wrong-hash.bat'
 s=(win/'1-Install.bat').read_text('utf8')
