@@ -1,0 +1,27 @@
+name: Windows transcriber acceptance
+on:
+  push:
+    branches: [codex/windows-transcriber-install]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  install-and-transcribe:
+    runs-on: windows-2022
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install exact ZIP and transcribe Russian test audio
+        shell: pwsh
+        run: python ci/check_windows.py
+      - name: Save exact tested ZIP and evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-transcriber-acceptance
+          path: |
+            windows-evidence/transcribator-shchsm.zip
+            windows-evidence/SHA256SUMS
+            windows-evidence/*.log
+            windows-evidence/RESULT.json
+            windows-evidence/result-ru.txt
