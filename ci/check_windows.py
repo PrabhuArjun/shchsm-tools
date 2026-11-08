@@ -27,9 +27,9 @@ def run(bat,args=(),extra=None,tag='run',ok=True):
 
 # Parse all shipped PowerShell scripts using Windows PowerShell before execution.
 for script in win.glob('*.ps1'):
- payload=base64.b64encode(script.read_text(encoding='utf-8-sig').encode('utf8')).decode()
- code="[void][scriptblock]::Create([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('"+payload+"')))"
- subprocess.run(['powershell.exe','-NoProfile','-EncodedCommand',base64.b64encode(code.encode('utf-16-le')).decode()],env=env,check=True)
+ code="[void][scriptblock]::Create([IO.File]::ReadAllText($env:TSH_PARSE_SOURCE))"
+ parse_env=env.copy();parse_env['TSH_PARSE_SOURCE']=str(script)
+ subprocess.run(['powershell.exe','-NoProfile','-EncodedCommand',base64.b64encode(code.encode('utf-16-le')).decode()],env=parse_env,check=True)
 # New runner profile: actual dependencies, model, native Desktop and launcher.
 run(win/'1-Install.bat',tag='install')
 root=pathlib.Path(env['USERPROFILE'])/'.transcriber-shchsm'

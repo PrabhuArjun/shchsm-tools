@@ -6,7 +6,7 @@ Add-Type -AssemblyName System.IO.Compression.FileSystem
 
 $PackageRoot = $env:TSH_PACKAGE_ROOT
 if ([string]::IsNullOrWhiteSpace($PackageRoot)) { Write-Host '[!] TSH_PACKAGE_ROOT is not set'; exit 1 }
-$PackageRoot = [IO.Path]::GetFullPath($PackageRoot)
+$PackageRoot = [IO.Path]::GetFullPath($PackageRoot).TrimEnd([IO.Path]::DirectorySeparatorChar)
 $Automated = ($env:SHCHSM_AUTOMATED -eq '1')
 
 $FfmpegUrl = 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip'
