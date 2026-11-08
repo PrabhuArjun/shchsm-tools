@@ -17,7 +17,7 @@ checks=[]
 def run(bat,args=(),extra=None,tag='run',ok=True):
  e=env.copy();e.update(extra or {})
  command='call "'+str(bat)+'" '+ ' '.join('"'+str(x)+'"' for x in args)
- p=subprocess.run(['cmd.exe','/d','/c',command],env=e,capture_output=True,timeout=1200)
+ p=subprocess.run('cmd.exe /d /s /c "'+command+'"',env=e,capture_output=True,timeout=1200)
  (out/(tag+'.log')).write_bytes(p.stdout+b'\nSTDERR\n'+p.stderr)
  if ok and p.returncode!=0:raise AssertionError((tag,p.returncode,p.stdout[-3000:].decode('utf8',errors='replace')))
  if not ok and p.returncode==0:raise AssertionError(tag+' incorrectly succeeded')
